@@ -129,8 +129,8 @@
   position: relative;
 }
 .header__label {
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 16px;
+  line-height: 1.14;
 
   color: #ffffff;
 
@@ -146,8 +146,8 @@
   background-color: inherit;
   border-bottom: 0.5px solid #ffffff;
   border-radius: 0;
-  font-size: 14px;
-  line-height: 16px;
+  font-size: 16px;
+  line-height: 1.14;
 
   color: #ffffff;
   padding-bottom: 4px;
@@ -157,8 +157,10 @@
 .header__input:focus {
   outline: none;
 }
-
-.header__input:focus + .header__label {
+.header__input::placeholder {
+  opacity: 0;
+}
+.header .header__input:focus + .header__label {
   transform: translateY(-20px);
 }
 
