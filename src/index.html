@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,9 +14,9 @@
     <link rel="stylesheet" href="./sass/index.scss" />
   </head>
   <body>
-    <header class="header">
+    <header class="header header-main">
       <div class="container">
-        <nav class="header__nav">
+        <nav class="header-main__nav">
           <a href="./index.html" class="header__logo">
             <svg width="24px" height="24px" class="header__icon">
               <use href="./images/icons.svg#icon-logo"></use>
@@ -54,63 +54,8 @@
       <section class="movies">
         <div class="container">
           <h2 class="movies__title">Movies</h2>
-          <ul class="movies-gallery">
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-          </ul>
+          <ul class="movies-gallery"></ul>
+          <button class="movies__btn">load more</button>
         </div>
       </section>
     </main>
