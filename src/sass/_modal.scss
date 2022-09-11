@@ -1,0 +1,249 @@
+.backdrop {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.25);
+  bottom: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  overflow: scroll;
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
+  @media screen and (min-width: 480px) {
+    padding: 0;
+  }
+  transition: transform 200ms linear, opacity 200ms linear;
+}
+
+.backdrop.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.1);
+}
+.movie-modal {
+  background-color: #fff;
+  width: 100%;
+  padding-top: 48px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 40px;
+  position: relative;
+
+  @media screen and (min-width: 480px) {
+    width: 440px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  @media screen and (min-width: 768px) {
+    width: 704px;
+    padding-top: 40px;
+    padding-left: 36px;
+    padding-right: 0;
+    display: flex;
+    align-items: flex-start;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  @media screen and (min-width: 1280px) {
+    width: 806px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+.movie-modal__close {
+  border: none;
+  background-color: inherit;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.movie-modal__close:hover {
+  cursor: pointer;
+}
+.movie-modal__icon {
+  display: block;
+}
+
+.movie-modal__img {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  object-fit: cover;
+  @media screen and (min-width: 768px) {
+    width: 264px;
+    height: 396px;
+    margin-bottom: 0;
+    margin-right: 68px;
+  }
+  @media screen and (min-width: 1280px) {
+    width: 375px;
+    height: 562px;
+    margin-right: 16px;
+  }
+}
+
+.movie-modal__info {
+  @media screen and (min-width: 768px) {
+    width: 264px;
+  }
+  @media screen and (min-width: 1280px) {
+    width: 100%;
+  }
+}
+.movie-modal__title {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.15;
+
+  color: #000000;
+  margin-bottom: 20px;
+
+  @media screen and (min-width: 1280px) {
+    font-size: 30px;
+    line-height: 35px;
+  }
+}
+
+.movie-modal__stats {
+  margin-bottom: 20px;
+}
+.movie-modal__field {
+  display: flex;
+}
+.movie-modal__field:not(:last-child) {
+  margin-bottom: 8px;
+}
+.movie-modal__category {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.33;
+
+  color: #8c8c8c;
+  width: 70px;
+  margin-right: 40px;
+
+  flex-shrink: 0;
+}
+
+.movie-modal__data {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.33;
+
+  color: #000000;
+}
+
+.movie-modal__field:first-child > .movie-modal__data {
+  display: flex;
+}
+
+.movie-modal__rating {
+  width: 36px;
+  height: 16px;
+  background: #ff6b01;
+  border-radius: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.17;
+
+  color: #ffffff;
+  margin-right: 3px;
+}
+
+.movie-modal__quantity {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 4px;
+  padding-right: 4px;
+  min-width: 36px;
+  height: 16px;
+  border-radius: 5px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.17;
+  background-color: #f7f7f7;
+  color: #000000;
+  margin-left: 3px;
+}
+
+.movie-modal__subtitle {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.33;
+  text-transform: uppercase;
+
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.movie-modal__text {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.67;
+
+  color: #000000;
+
+  margin-bottom: 20px;
+
+  @media screen and (min-width: 768px) {
+    margin-bottom: 40px;
+  }
+  @media screen and (min-width: 1280px) {
+    margin-bottom: 20px;
+  }
+}
+.movie-modal__buttons {
+  display: flex;
+  justify-content: center;
+}
+.movie-modal__item:not(:last-child) {
+  margin-right: 20px;
+  @media screen and (min-width: 768px) {
+    margin-right: 15px;
+  }
+}
+
+.movie-modal__item:first-child > .movie-modal__btn {
+  padding-left: 27px;
+  padding-right: 27px;
+  @media screen and (min-width: 768px) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+.movie-modal__btn {
+  width: 110px;
+  height: 44px;
+
+  background: inherit;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.33;
+  text-transform: uppercase;
+
+  color: #000000;
+  @media screen and (min-width: 768px) {
+    width: 125px;
+  }
+  @media screen and (min-width: 1280px) {
+    width: 136px;
+  }
+}
+
+.movie-modal__btn--accent {
+  border: none;
+  background: #ff6b01;
+  color: #ffffff;
+}
