@@ -1,12 +1,6 @@
 import genres from './genres';
 
-export function getCardMarkup({
-  title,
-  id,
-  poster_path,
-  release_date,
-  genre_ids,
-}) {
+function getCardMarkup({ title, id, poster_path, release_date, genre_ids }) {
   const BASE_URL = 'https://image.tmdb.org/t/p/w780';
   return `
             <li class="movies-gallery__item" data-id=${id}>
@@ -47,69 +41,7 @@ export function getCardMarkup({
             </li>`;
 }
 
-export function getModalMarkup() {
-  return `
-      <div class="movie-modal">
-        <button type="button" class="movie-modal__close js-modal-close">
-          <svg width="30px" height="30px" class="movie-modal__icon">
-            <use href="./images/icons.svg#icon-close"></use>
-          </svg>
-        </button>
-        <img
-          src="https://image.tmdb.org/t/p/w780/pIkRyD18kl4FhoCNQuWxWu5cBLM.jpg"
-          alt="Thor: Love and Thunder"
-          class="movie-modal__img"
-        />
-        <div class="movie-modal__info">
-          <h3 class="movie-modal__title">A FISTFUL OF LEAD</h3>
-          <ul class="movie-modal__stats">
-            <li class="movie-modal__field">
-              <p class="movie-modal__category">Vote / Votes</p>
-              <p class="movie-modal__data">
-                <span class="movie-modal__rating">7.3</span>
-                /
-                <span class="movie-modal__quantity">1260</span>
-              </p>
-            </li>
-            <li class="movie-modal__field">
-              <p class="movie-modal__category">Popularity</p>
-              <p class="movie-modal__data">100.2</p>
-            </li>
-            <li class="movie-modal__field">
-              <p class="movie-modal__category">Original Title</p>
-              <p class="movie-modal__data">A FISTFUL OF LEAD</p>
-            </li>
-            <li class="movie-modal__field">
-              <p class="movie-modal__category">Genre</p>
-              <p class="movie-modal__data">Western</p>
-            </li>
-          </ul>
-          <h4 class="movie-modal__subtitle">About</h4>
-          <p class="movie-modal__text">
-            Four of the West’s most infamous outlaws assemble to steal a huge
-            stash of gold from the most corrupt settlement of the gold rush
-            towns. But not all goes to plan one is killed and the other three
-            escapes with bags of gold hide out in the abandoned gold mine where
-            they happen across another gang of three – who themselves were
-            planning to hit the very same bank! As tensions rise, things go from
-            bad to worse as they realise the bags of gold are filled with
-            lead... they’ve been double crossed – but by who and how?
-          </p>
-          <ul class="movie-modal__buttons">
-            <li class="movie-modal__item">
-              <button
-                type="submit"
-                class="movie-modal__btn movie-modal__btn--accent"
-              >
-                add to Watched
-              </button>
-            </li>
-            <li class="movie-modal__item">
-              <button type="submit" class="movie-modal__btn">
-                add to queue
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>`;
+export function getMoviesMarkup(movies) {
+  const markup = movies.map(getCardMarkup).join('\n');
+  return markup;
 }

@@ -34,12 +34,17 @@
         </nav>
         <ul class="header-library__list">
           <li class="header-library__item">
-            <button type="button" class="header-library__btn active">
+            <button
+              type="button"
+              class="header-library__btn active js-watched-btn"
+            >
               Watched
             </button>
           </li>
           <li class="header-library__item">
-            <button type="button" class="header-library__btn">queue</button>
+            <button type="button" class="header-library__btn js-queue-btn">
+              queue
+            </button>
           </li>
         </ul>
       </div>
@@ -48,63 +53,7 @@
       <section class="movies">
         <div class="container">
           <h2 class="movies__title">Movies</h2>
-          <ul class="movies-gallery">
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-            <li class="movies-gallery__item">
-              <img
-                src="./images/card-img.jpg"
-                alt="Movie Card"
-                class="movies-gallery__img"
-              />
-              <div class="movies-gallery__text">
-                <h3 class="movies-gallery__title">Greyhound</h3>
-                <p class="movies-gallery__genres">Drama, Action | 2020</p>
-              </div>
-            </li>
-          </ul>
+          <ul class="movies-gallery js-gallery"></ul>
         </div>
       </section>
     </main>
@@ -122,5 +71,6 @@
         </div>
       </div>
     </footer>
+    <script src="./library.js" type="module"></script>
   </body>
 </html>

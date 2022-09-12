@@ -1,16 +1,26 @@
-import { getCardMarkup } from './js/templates';
+import { getMoviesMarkup } from './js/templates';
 import genres from './js/genres';
+import { readMovies, createMovies, updateMovies } from './js/crud';
+import { Loader } from './js/loader';
+import { Notify } from 'notiflix';
+
+import {
+  API_KEY,
+  BASE_URL,
+  BASE_IMG,
+  WATCHED_KEY,
+  QUEUE_KEY,
+} from './js/constants';
+
 const refs = {
   form: document.querySelector('form.header__form'),
   gallery: document.querySelector('.movies-gallery'),
   loadMoreBtn: document.querySelector('.js-load-more-btn'),
   backdrop: document.querySelector('.backdrop'),
   modalCloseBtn: document.querySelector('button.js-modal-close'),
+  watchedBtn: document.querySelector('.js-watched-btn'),
+  queueBtn: document.querySelector('.js-queue-btn'),
 };
-
-const KEY = '21a38995d1a0d82c48e261b573f88f7b';
-const BASE_URL = 'https://api.themoviedb.org/3';
-const BASE_IMG = 'https://image.tmdb.org/t/p/w780';
 
 let items = [];
 let page = 1;
@@ -18,13 +28,9 @@ let query = '';
 let currentResult = 0;
 let totalResults = 0;
 let searchByQuery = false;
+const loader = new Loader();
 
-const reset = () => {
-  page = 1;
-  query = '';
-  currentResult = 0;
-  totalResults = 0;
-  items = [];
+const showButton = () => {
   refs.loadMoreBtn.classList.remove('hidden');
 };
 const hideButton = () => {
@@ -37,17 +43,34 @@ const showModal = () => {
 const hideModal = () => {
   refs.backdrop.classList.add('is-hidden');
 };
+const showMessage = ({ type, message }) => {
+  Notify[type](message);
+};
+const reset = () => {
+  page = 1;
+  query = '';
+  currentResult = 0;
+  totalResults = 0;
+  items = [];
+  showButton();
+};
+
 const loadTrendingMovies = async () => {
   const res = await fetch(
-    `${BASE_URL}/trending/movie/week?api_key=${KEY}&page=${page}`
+    `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&page=${page}`
   );
   const data = await res.json();
+  currentResult += data.results.length;
+  totalResults = data.total_results;
+  if (currentResult === totalResults) {
+    hideButton();
+  }
   items = [...items, ...data.results];
 };
 
 const loadMoviesByQuery = async () => {
   const res = await fetch(
-    `${BASE_URL}/search/movie?api_key=${KEY}&query=${query}&page=${page}`
+    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}&page=${page}`
   );
   const data = await res.json();
   currentResult += data.results.length;
@@ -59,7 +82,7 @@ const loadMoviesByQuery = async () => {
 };
 
 const renderItems = () => {
-  const markup = items.map(getCardMarkup).join('\n');
+  const markup = getMoviesMarkup(items);
   refs.gallery.innerHTML = markup;
 };
 
@@ -73,6 +96,7 @@ const renderModal = idMovie => {
     original_title,
     genre_ids,
     overview,
+    id,
   } = items.find(({ id }) => id === Number(idMovie));
   refs.backdrop.querySelector('.js-img').src = poster_path
     ? `${BASE_IMG}${poster_path}`
@@ -91,19 +115,21 @@ const renderModal = idMovie => {
           .join(', ')
       : 'No information';
   refs.backdrop.querySelector('.js-text').textContent = overview;
+  refs.backdrop.querySelector('.js-modal').dataset.id = id;
 };
 
-const onFormSubmit = e => {
+const onFormSubmit = async e => {
   e.preventDefault();
   reset();
   searchByQuery = true;
   query = e.currentTarget.elements.query.value;
   if (query) {
-    onLoadMore();
+    await onLoadMore();
   }
 };
 
 const onLoadMore = async () => {
+  loader.show();
   if (searchByQuery) {
     await loadMoviesByQuery();
 
@@ -112,6 +138,7 @@ const onLoadMore = async () => {
     page += 1;
     await loadTrendingMovies();
   }
+  loader.hide();
   renderItems();
 };
 
@@ -122,9 +149,65 @@ const onGalleryClick = e => {
   showModal();
 };
 
+const onWatchedBtnClick = e => {
+  const movieId = e.currentTarget.closest('.js-modal').dataset.id;
+  const movieData = items.find(({ id }) => id === Number(movieId));
+
+  const watchedMovies = readMovies(WATCHED_KEY);
+  if (!watchedMovies) {
+    createMovies(WATCHED_KEY, movieData);
+    showMessage({
+      type: 'success',
+      message: `${movieData.title} is added to 'Watched'`,
+    });
+    return;
+  }
+  if (watchedMovies.find(({ id }) => id === Number(movieId))) {
+    showMessage({
+      type: 'failure',
+      message: `${movieData.title} has already been added to 'Watched'`,
+    });
+    return;
+  }
+  updateMovies(WATCHED_KEY, movieData);
+  showMessage({
+    type: 'success',
+    message: `${movieData.title} is added to 'Watched'`,
+  });
+};
+
+const onQueueBtnClick = e => {
+  const movieId = e.currentTarget.closest('.js-modal').dataset.id;
+  const movieData = items.find(({ id }) => id === Number(movieId));
+
+  const queueMovies = readMovies(QUEUE_KEY);
+  if (!queueMovies) {
+    createMovies(QUEUE_KEY, movieData);
+    showMessage({
+      type: 'success',
+      message: `${movieData.title} is added to 'Queue'`,
+    });
+    return;
+  }
+  if (queueMovies.find(({ id }) => id === Number(movieId))) {
+    showMessage({
+      type: 'failure',
+      message: `${movieData.title} has already been added to 'Queue'`,
+    });
+    return;
+  }
+  updateMovies(QUEUE_KEY, movieData);
+  showMessage({
+    type: 'success',
+    message: `${movieData.title} is added to 'Queue'`,
+  });
+};
+
 refs.form.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 refs.gallery.addEventListener('click', onGalleryClick);
 refs.modalCloseBtn.addEventListener('click', hideModal);
+refs.watchedBtn.addEventListener('click', onWatchedBtnClick);
+refs.queueBtn.addEventListener('click', onQueueBtnClick);
 
 loadTrendingMovies().then(renderItems);

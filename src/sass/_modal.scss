@@ -242,6 +242,9 @@
   }
 }
 
+.movie-modal__btn:hover {
+  cursor: pointer;
+}
 .movie-modal__btn--accent {
   border: none;
   background: #ff6b01;
