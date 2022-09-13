@@ -71,6 +71,61 @@
         </div>
       </div>
     </footer>
+    <div class="backdrop is-hidden">
+      <div class="movie-modal js-modal">
+        <button type="button" class="movie-modal__close js-modal-close">
+          <svg width="30px" height="30px" class="movie-modal__icon">
+            <use href="./images/icons.svg#icon-close"></use>
+          </svg>
+        </button>
+        <img src="#" alt="" class="movie-modal__img js-img" />
+        <div class="movie-modal__info">
+          <h3 class="movie-modal__title js-title"></h3>
+          <ul class="movie-modal__stats">
+            <li class="movie-modal__field">
+              <p class="movie-modal__category">Vote / Votes</p>
+              <p class="movie-modal__data">
+                <span class="movie-modal__rating js-rating"></span>
+                /
+                <span class="movie-modal__quantity js-votes"></span>
+              </p>
+            </li>
+            <li class="movie-modal__field">
+              <p class="movie-modal__category">Popularity</p>
+              <p class="movie-modal__data js-popularity"></p>
+            </li>
+            <li class="movie-modal__field">
+              <p class="movie-modal__category">Original Title</p>
+              <p class="movie-modal__data js-original"></p>
+            </li>
+            <li class="movie-modal__field">
+              <p class="movie-modal__category">Genre</p>
+              <p class="movie-modal__data js-genre"></p>
+            </li>
+          </ul>
+          <h4 class="movie-modal__subtitle">About</h4>
+          <p class="movie-modal__text js-text"></p>
+          <ul class="movie-modal__buttons">
+            <li class="movie-modal__item">
+              <button
+                type="submit"
+                class="movie-modal__btn movie-modal__btn--accent js-add-to-watched-btn"
+              >
+                add to Watched
+              </button>
+            </li>
+            <li class="movie-modal__item">
+              <button
+                type="submit"
+                class="movie-modal__btn js-add-to-queue-btn"
+              >
+                add to queue
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <script src="./library.js" type="module"></script>
   </body>
 </html>

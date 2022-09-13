@@ -242,6 +242,10 @@
   }
 }
 
+.movie-modal__btn.is-hidden {
+  display: none;
+}
+
 .movie-modal__btn:hover {
   cursor: pointer;
 }

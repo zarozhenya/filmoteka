@@ -2,7 +2,7 @@ import { getMoviesMarkup } from './js/templates';
 import genres from './js/genres';
 import { readMovies, createMovies, updateMovies } from './js/crud';
 import { Loader } from './js/loader';
-import { Notify } from 'notiflix';
+import { showMessage } from './js/showMessage';
 
 import {
   API_KEY,
@@ -43,9 +43,7 @@ const showModal = () => {
 const hideModal = () => {
   refs.backdrop.classList.add('is-hidden');
 };
-const showMessage = ({ type, message }) => {
-  Notify[type](message);
-};
+
 const reset = () => {
   page = 1;
   query = '';
@@ -154,25 +152,30 @@ const onWatchedBtnClick = e => {
   const movieData = items.find(({ id }) => id === Number(movieId));
 
   const watchedMovies = readMovies(WATCHED_KEY);
+  const queueMovies = readMovies(QUEUE_KEY);
+  if (
+    watchedMovies?.find(({ id }) => id === Number(movieId)) ||
+    queueMovies?.find(({ id }) => id === Number(movieId))
+  ) {
+    showMessage({
+      type: 'failure',
+      message: `'${movieData.title}' has already been added to Library`,
+    });
+    return;
+  }
   if (!watchedMovies) {
     createMovies(WATCHED_KEY, movieData);
     showMessage({
       type: 'success',
-      message: `${movieData.title} is added to 'Watched'`,
+      message: `'${movieData.title}' is added to 'Watched'`,
     });
     return;
   }
-  if (watchedMovies.find(({ id }) => id === Number(movieId))) {
-    showMessage({
-      type: 'failure',
-      message: `${movieData.title} has already been added to 'Watched'`,
-    });
-    return;
-  }
+
   updateMovies(WATCHED_KEY, movieData);
   showMessage({
     type: 'success',
-    message: `${movieData.title} is added to 'Watched'`,
+    message: `'${movieData.title}' is added to 'Watched'`,
   });
 };
 
@@ -181,25 +184,30 @@ const onQueueBtnClick = e => {
   const movieData = items.find(({ id }) => id === Number(movieId));
 
   const queueMovies = readMovies(QUEUE_KEY);
+  const watchedMovies = readMovies(WATCHED_KEY);
+  if (
+    queueMovies?.find(({ id }) => id === Number(movieId)) ||
+    watchedMovies?.find(({ id }) => id === Number(movieId))
+  ) {
+    showMessage({
+      type: 'failure',
+      message: `'${movieData.title}' has already been added to Library`,
+    });
+    return;
+  }
   if (!queueMovies) {
     createMovies(QUEUE_KEY, movieData);
     showMessage({
       type: 'success',
-      message: `${movieData.title} is added to 'Queue'`,
+      message: `'${movieData.title}' is added to 'Queue'`,
     });
     return;
   }
-  if (queueMovies.find(({ id }) => id === Number(movieId))) {
-    showMessage({
-      type: 'failure',
-      message: `${movieData.title} has already been added to 'Queue'`,
-    });
-    return;
-  }
+
   updateMovies(QUEUE_KEY, movieData);
   showMessage({
     type: 'success',
-    message: `${movieData.title} is added to 'Queue'`,
+    message: `'${movieData.title}' is added to 'Queue'`,
   });
 };
 
