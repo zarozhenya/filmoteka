@@ -161,6 +161,7 @@ const onWatchedBtnClick = e => {
       type: 'failure',
       message: `'${movieData.title}' has already been added to Library`,
     });
+    hideModal();
     return;
   }
   if (!watchedMovies) {
@@ -169,6 +170,7 @@ const onWatchedBtnClick = e => {
       type: 'success',
       message: `'${movieData.title}' is added to 'Watched'`,
     });
+    hideModal();
     return;
   }
 
@@ -177,6 +179,7 @@ const onWatchedBtnClick = e => {
     type: 'success',
     message: `'${movieData.title}' is added to 'Watched'`,
   });
+  hideModal();
 };
 
 const onQueueBtnClick = e => {
@@ -193,6 +196,7 @@ const onQueueBtnClick = e => {
       type: 'failure',
       message: `'${movieData.title}' has already been added to Library`,
     });
+    hideModal();
     return;
   }
   if (!queueMovies) {
@@ -201,6 +205,7 @@ const onQueueBtnClick = e => {
       type: 'success',
       message: `'${movieData.title}' is added to 'Queue'`,
     });
+    hideModal();
     return;
   }
 
@@ -209,6 +214,7 @@ const onQueueBtnClick = e => {
     type: 'success',
     message: `'${movieData.title}' is added to 'Queue'`,
   });
+  hideModal();
 };
 
 refs.form.addEventListener('submit', onFormSubmit);
