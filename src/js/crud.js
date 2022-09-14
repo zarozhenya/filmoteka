@@ -3,7 +3,7 @@ export function createMovies(key, data) {
 }
 export function readMovies(key) {
   const movies = localStorage.getItem(key);
-  return JSON.parse(movies);
+  return JSON.parse(movies) || [];
 }
 export function updateMovies(key, data) {
   const movies = readMovies(key);
@@ -12,6 +12,5 @@ export function updateMovies(key, data) {
 export function deleteMovie(key, movieId) {
   const movies = readMovies(key);
   const filteredMovies = movies.filter(({ id }) => id !== Number(movieId));
-  console.log(filteredMovies);
   localStorage.setItem(key, JSON.stringify(filteredMovies));
 }

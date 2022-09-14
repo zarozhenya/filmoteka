@@ -35,6 +35,9 @@ const changeBtnView = page => {
 };
 
 const renderItems = () => {
+  if (items.length === 0) {
+    showMessage({ type: 'info', message: 'There is no movies yet' });
+  }
   const markup = getMoviesMarkup(items);
   refs.gallery.innerHTML = markup;
 };
