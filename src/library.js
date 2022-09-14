@@ -23,13 +23,21 @@ const onBackdropClick = e => {
   }
 };
 
+const onKeyPress = e => {
+  if (e.code === 'Escape') {
+    hideModal();
+  }
+};
+
 const showModal = () => {
   refs.backdrop.classList.remove('is-hidden');
   refs.backdrop.addEventListener('click', onBackdropClick);
+  document.body.addEventListener('keydown', onKeyPress);
 };
 const hideModal = () => {
   refs.backdrop.classList.add('is-hidden');
   refs.backdrop.removeEventListener('click', onBackdropClick);
+  document.body.removeEventListener('keydown', onKeyPress);
 };
 const changeBtnView = page => {
   if (page === 'watched') {

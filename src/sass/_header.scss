@@ -115,6 +115,22 @@
   text-decoration: none;
 }
 
+.header-list__btn {
+  border: none;
+  background-color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-list__btn:hover {
+  cursor: pointer;
+}
+
+.header-list__btn:focus {
+  outline: none;
+}
+
 .header__form {
   width: 280px;
   margin-right: auto;

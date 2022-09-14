@@ -63,6 +63,10 @@
   top: 8px;
   right: 8px;
 }
+
+.movie-modal.is-hidden {
+  display: none;
+}
 .movie-modal__close:hover {
   cursor: pointer;
 }
@@ -255,4 +259,132 @@
   border: none;
   background: #ff6b01;
   color: #ffffff;
+}
+
+// LOGIN MODAL
+
+.login-modal {
+  position: relative;
+  max-width: 440px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  width: 100%;
+  padding-top: 48px;
+  padding-bottom: 48px;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.login-modal.is-hidden {
+  display: none;
+}
+
+.login-modal__title {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+
+  text-align: center;
+  text-transform: uppercase;
+
+  color: #000000;
+
+  margin-bottom: 28px;
+}
+
+.login-modal__filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+.login-modal__filter:not(:last-child) {
+  margin-right: 20px;
+}
+.login-modal__radio {
+  display: none;
+}
+
+.login-modal__label {
+  display: flex;
+  font-size: 12px;
+  line-height: 1.33;
+  /* identical to box height, or 133% */
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+
+  color: #000000;
+
+  width: 110px;
+  height: 36px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+}
+.login-modal__label:hover {
+  cursor: pointer;
+}
+
+.login-modal__radio:checked + .login-modal__label {
+  background: #ff6b02;
+  color: #ffffff;
+  border: none;
+}
+
+.login-modal__fields {
+  max-width: 300px;
+  margin-bottom: 40px;
+  margin-right: auto;
+  margin-left: auto;
+}
+.login-modal__field:not(:last-child) {
+  margin-bottom: 16px;
+}
+.field__label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  text-transform: uppercase;
+
+  color: #000000;
+}
+
+.field__input {
+  display: block;
+  width: 100%;
+  font-size: 16px;
+  line-height: 1.5;
+  padding-top: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 6px;
+  border: 1px solid #000000;
+  border-radius: 8px;
+}
+
+.field__input:focus {
+  outline: none;
+  border: 1px solid #ff6b02;
+}
+
+.login-modal__submit {
+  display: block;
+  font-weight: 500;
+  margin-right: auto;
+  margin-left: auto;
+  width: 152px;
+  height: 44px;
+  background: #ff6b01;
+  border-radius: 5px;
+  border: none;
+  font-size: 12px;
+  line-height: 1.33;
+  text-transform: uppercase;
+
+  color: #ffffff;
+}
+
+.login-modal__submit {
+  cursor: pointer;
 }

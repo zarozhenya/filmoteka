@@ -7,7 +7,7 @@ export function readMovies(key) {
 }
 export function updateMovies(key, data) {
   const movies = readMovies(key);
-  localStorage.setItem(key, JSON.stringify([...movies, data]));
+  localStorage.setItem(key, JSON.stringify([data, ...movies]));
 }
 export function deleteMovie(key, movieId) {
   const movies = readMovies(key);

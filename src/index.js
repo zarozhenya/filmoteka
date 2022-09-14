@@ -17,9 +17,13 @@ const refs = {
   gallery: document.querySelector('.movies-gallery'),
   loadMoreBtn: document.querySelector('.js-load-more-btn'),
   backdrop: document.querySelector('.backdrop'),
+  modal: document.querySelector('.js-modal'),
   modalCloseBtn: document.querySelector('button.js-modal-close'),
   watchedBtn: document.querySelector('.js-watched-btn'),
   queueBtn: document.querySelector('.js-queue-btn'),
+  loginBtn: document.querySelector('.js-login-btn'),
+  loginModal: document.querySelector('.js-login-modal'),
+  loginModalCloseBtn: document.querySelector('.js-login-close'),
 };
 
 let items = [];
@@ -40,22 +44,47 @@ const hideButton = () => {
 const onBackdropClick = e => {
   if (e.target.classList.contains('backdrop')) {
     hideModal();
+    hideLogin();
   }
 };
 
-// const onKeyPress = e => {
-//   console.log(e.code);
-//   console.log(e.key);
-// };
+const onKeyPress = e => {
+  if (e.code === 'Escape') {
+    hideModal();
+    hideLogin();
+  }
+};
 
 const showModal = () => {
+  refs.modal.classList.remove('is-hidden');
   refs.backdrop.classList.remove('is-hidden');
+
   refs.backdrop.addEventListener('click', onBackdropClick);
-  // document.body.addEventListener('keydown', onKeyPress);
+  document.body.addEventListener('keydown', onKeyPress);
 };
 const hideModal = () => {
   refs.backdrop.classList.add('is-hidden');
+  setTimeout(() => {
+    refs.modal.classList.add('is-hidden');
+  }, 200);
   refs.backdrop.removeEventListener('click', onBackdropClick);
+  document.body.removeEventListener('keydown', onKeyPress);
+};
+
+const showLogin = e => {
+  refs.loginModal.classList.remove('is-hidden');
+  refs.backdrop.classList.remove('is-hidden');
+  refs.backdrop.addEventListener('click', onBackdropClick);
+  document.body.addEventListener('keydown', onKeyPress);
+};
+
+const hideLogin = e => {
+  refs.backdrop.classList.add('is-hidden');
+  setTimeout(() => {
+    refs.loginModal.classList.add('is-hidden');
+  }, 200);
+  refs.backdrop.removeEventListener('click', onBackdropClick);
+  document.body.removeEventListener('keydown', onKeyPress);
 };
 
 const reset = () => {
@@ -237,5 +266,7 @@ refs.gallery.addEventListener('click', onGalleryClick);
 refs.modalCloseBtn.addEventListener('click', hideModal);
 refs.watchedBtn.addEventListener('click', onWatchedBtnClick);
 refs.queueBtn.addEventListener('click', onQueueBtnClick);
+refs.loginBtn.addEventListener('click', showLogin);
+refs.loginModalCloseBtn.addEventListener('click', hideLogin);
 
 loadTrendingMovies().then(renderItems);
