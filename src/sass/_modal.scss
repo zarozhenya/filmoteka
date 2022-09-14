@@ -9,14 +9,15 @@
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 20px;
+
   overflow: scroll;
   opacity: 1;
-  pointer-events: all;
   transform: scale(1);
+
   @media screen and (min-width: 480px) {
     padding: 0;
   }
-  transition: transform 200ms linear, opacity 200ms linear;
+  transition: transform 150ms linear, opacity 150ms linear;
 }
 
 .backdrop.is-hidden {
@@ -24,6 +25,7 @@
   pointer-events: none;
   transform: scale(1.1);
 }
+
 .movie-modal {
   background-color: #fff;
   width: 100%;
