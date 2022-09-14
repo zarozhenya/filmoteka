@@ -37,11 +37,25 @@ const hideButton = () => {
   refs.loadMoreBtn.classList.add('hidden');
 };
 
+const onBackdropClick = e => {
+  if (e.target.classList.contains('backdrop')) {
+    hideModal();
+  }
+};
+
+// const onKeyPress = e => {
+//   console.log(e.code);
+//   console.log(e.key);
+// };
+
 const showModal = () => {
   refs.backdrop.classList.remove('is-hidden');
+  refs.backdrop.addEventListener('click', onBackdropClick);
+  // document.body.addEventListener('keydown', onKeyPress);
 };
 const hideModal = () => {
   refs.backdrop.classList.add('is-hidden');
+  refs.backdrop.removeEventListener('click', onBackdropClick);
 };
 
 const reset = () => {

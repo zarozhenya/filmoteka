@@ -17,11 +17,19 @@ const refs = {
 let items = [];
 let currentPage = 'watched';
 
+const onBackdropClick = e => {
+  if (e.target.classList.contains('backdrop')) {
+    hideModal();
+  }
+};
+
 const showModal = () => {
   refs.backdrop.classList.remove('is-hidden');
+  refs.backdrop.addEventListener('click', onBackdropClick);
 };
 const hideModal = () => {
   refs.backdrop.classList.add('is-hidden');
+  refs.backdrop.removeEventListener('click', onBackdropClick);
 };
 const changeBtnView = page => {
   if (page === 'watched') {
