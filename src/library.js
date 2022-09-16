@@ -3,15 +3,42 @@ import { getMoviesMarkup } from './js/templates';
 import { WATCHED_KEY, QUEUE_KEY, BASE_IMG } from './js/constants';
 import genres from './js/genres';
 import { showMessage } from './js/showMessage';
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from 'firebase/auth';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyC4TFBFQRWUVazSJUXo0Z29XqKQGw3CwAA',
+  authDomain: 'filmoteka-29d04.firebaseapp.com',
+  projectId: 'filmoteka-29d04',
+  storageBucket: 'filmoteka-29d04.appspot.com',
+  messagingSenderId: '839332022784',
+  appId: '1:839332022784:web:20cca0e4887dab354326e5',
+  measurementId: 'G-8B53C0FEKF',
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
 
 const refs = {
   watchedBtn: document.querySelector('.js-watched-btn'),
   queueBtn: document.querySelector('.js-queue-btn'),
   gallery: document.querySelector('.js-gallery'),
   backdrop: document.querySelector('.backdrop'),
-  closeBtn: document.querySelector('.js-modal-close'),
+  modal: document.querySelector('.js-modal'),
+  modalCloseBtn: document.querySelector('.js-modal-close'),
   addToWatchedBtn: document.querySelector('.js-add-to-watched-btn'),
   addToQueueBtn: document.querySelector('.js-add-to-queue-btn'),
+  loginBtn: document.querySelector('.js-login-btn'),
+  logoutBtn: document.querySelector('.js-logout-btn'),
+  loginModal: document.querySelector('.js-login-modal'),
+  loginModalCloseBtn: document.querySelector('.js-login-close'),
+  loginForm: document.querySelector('.js-login-form'),
 };
 
 let items = [];
@@ -20,22 +47,45 @@ let currentPage = 'watched';
 const onBackdropClick = e => {
   if (e.target.classList.contains('backdrop')) {
     hideModal();
+    hideLogin();
   }
 };
 
 const onKeyPress = e => {
   if (e.code === 'Escape') {
     hideModal();
+    hideLogin();
   }
 };
 
 const showModal = () => {
+  refs.modal.classList.remove('is-hidden');
   refs.backdrop.classList.remove('is-hidden');
+
   refs.backdrop.addEventListener('click', onBackdropClick);
   document.body.addEventListener('keydown', onKeyPress);
 };
 const hideModal = () => {
   refs.backdrop.classList.add('is-hidden');
+  setTimeout(() => {
+    refs.modal.classList.add('is-hidden');
+  }, 200);
+  refs.backdrop.removeEventListener('click', onBackdropClick);
+  document.body.removeEventListener('keydown', onKeyPress);
+};
+
+const showLogin = e => {
+  refs.loginModal.classList.remove('is-hidden');
+  refs.backdrop.classList.remove('is-hidden');
+  refs.backdrop.addEventListener('click', onBackdropClick);
+  document.body.addEventListener('keydown', onKeyPress);
+};
+
+const hideLogin = e => {
+  refs.backdrop.classList.add('is-hidden');
+  setTimeout(() => {
+    refs.loginModal.classList.add('is-hidden');
+  }, 200);
   refs.backdrop.removeEventListener('click', onBackdropClick);
   document.body.removeEventListener('keydown', onKeyPress);
 };
@@ -161,11 +211,56 @@ const onAddToQueueBtn = e => {
   renderItems();
 };
 
+const onLoginSubmit = async e => {
+  e.preventDefault();
+  const { email, password, method } = e.currentTarget.elements;
+  console.log(method.value);
+  if (method.value === 'sign-up') {
+    await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    ).catch(error => {
+      console.log(error.code);
+      console.log(error.message);
+    });
+  } else if (method.value === 'sign-in') {
+    await signInWithEmailAndPassword(auth, email.value, password.value).catch(
+      error => {
+        console.log(error.code);
+        console.log(error.message);
+      }
+    );
+  }
+  hideLogin();
+  e.target.reset();
+};
+
+const onLogOut = e => {
+  auth.signOut();
+};
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    isAuthorized = true;
+    refs.loginBtn.classList.add('is-hidden');
+    refs.logoutBtn.classList.remove('is-hidden');
+  } else {
+    isAuthorized = false;
+    refs.logoutBtn.classList.add('is-hidden');
+    refs.loginBtn.classList.remove('is-hidden');
+  }
+});
+
 refs.watchedBtn.addEventListener('click', onWatchedBtnClick);
 refs.queueBtn.addEventListener('click', onQueueBtnClick);
 refs.gallery.addEventListener('click', onGalleryClick);
-refs.closeBtn.addEventListener('click', hideModal);
+refs.modalCloseBtn.addEventListener('click', hideModal);
 refs.addToWatchedBtn.addEventListener('click', onAddToWatchedBtnClick);
 refs.addToQueueBtn.addEventListener('click', onAddToQueueBtn);
+refs.loginBtn.addEventListener('click', showLogin);
+refs.logoutBtn.addEventListener('click', onLogOut);
+refs.loginModalCloseBtn.addEventListener('click', hideLogin);
+refs.loginForm.addEventListener('submit', onLoginSubmit);
 
 onWatchedBtnClick();

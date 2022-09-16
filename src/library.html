@@ -30,6 +30,22 @@
             <li class="header-list__item header-list__item--current">
               <a href="./library.html" class="header-list__link">my library</a>
             </li>
+            <li class="header-list__item">
+              <button
+                type="button"
+                class="header-list__btn js-login-btn is-hidden"
+              >
+                <svg width="18px" height="18px" class="header-list__icon">
+                  <use href="./images/icons.svg#icon-login"></use>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="header-list__link js-logout-btn is-hidden"
+              >
+                log out
+              </button>
+            </li>
           </ul>
         </nav>
         <ul class="header-library__list">
@@ -59,7 +75,7 @@
     </main>
     <footer class="footer">
       <div class="container footer__container">
-        <p class="footer__rights">© 2020 | All Rights Reserved |</p>
+        <p class="footer__rights">© 2022 | All Rights Reserved |</p>
         <div class="footer__text">
           <span class="footer__developed">Developed with</span>
           <svg class="footer__icon" width="14px" height="14px">
@@ -72,7 +88,7 @@
       </div>
     </footer>
     <div class="backdrop is-hidden">
-      <div class="movie-modal js-modal">
+      <div class="movie-modal js-modal is-hidden">
         <button type="button" class="movie-modal__close js-modal-close">
           <svg width="30px" height="30px" class="movie-modal__icon">
             <use href="./images/icons.svg#icon-close"></use>
@@ -124,6 +140,57 @@
             </li>
           </ul>
         </div>
+      </div>
+      <div class="login-modal is-hidden js-login-modal">
+        <button type="button" class="movie-modal__close js-login-close">
+          <svg width="30px" height="30px" class="movie-modal__icon">
+            <use href="./images/icons.svg#icon-close"></use>
+          </svg>
+        </button>
+        <h2 class="login-modal__title">
+          enter your data to sign in or sign up
+        </h2>
+        <form class="login-modal__form js-login-form">
+          <ul class="login-modal__filters">
+            <li class="login-modal__filter">
+              <input
+                type="radio"
+                name="method"
+                id="sign-in"
+                class="login-modal__radio"
+                value="sign-in"
+                checked
+              />
+              <label for="sign-in" class="login-modal__label">Sign in</label>
+            </li>
+            <li class="login-modal__filter">
+              <input
+                type="radio"
+                name="method"
+                id="sign-up"
+                class="login-modal__radio"
+                value="sign-up"
+              />
+              <label for="sign-up" class="login-modal__label">Sign up</label>
+            </li>
+          </ul>
+          <div class="login-modal__fields">
+            <div class="login-modal__field">
+              <label for="name" class="field__label">e-mail</label>
+              <input type="text" id="name" name="email" class="field__input" />
+            </div>
+            <div class="login-modal__field">
+              <label for="password" class="field__label">password</label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                class="field__input"
+              />
+            </div>
+          </div>
+          <button type="submit" class="login-modal__submit">submit</button>
+        </form>
       </div>
     </div>
     <script src="./library.js" type="module"></script>

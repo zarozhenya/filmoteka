@@ -27,14 +27,23 @@
             <li class="header-list__item header-list__item--current">
               <a href="./index.html" class="header-list__link">Home</a>
             </li>
-            <li class="header-list__item">
+            <li class="header-list__item js-library-item">
               <a href="./library.html" class="header-list__link">my library</a>
             </li>
             <li class="header-list__item">
-              <button type="button" class="header-list__btn js-login-btn">
+              <button
+                type="button"
+                class="header-list__btn js-login-btn is-hidden"
+              >
                 <svg width="18px" height="18px" class="header-list__icon">
                   <use href="./images/icons.svg#icon-login"></use>
                 </svg>
+              </button>
+              <button
+                type="button"
+                class="header-list__link js-logout-btn is-hidden"
+              >
+                log out
               </button>
             </li>
           </ul>
@@ -69,7 +78,7 @@
     </main>
     <footer class="footer">
       <div class="container footer__container">
-        <p class="footer__rights">© 2020 | All Rights Reserved |</p>
+        <p class="footer__rights">© 2022 | All Rights Reserved |</p>
         <div class="footer__text">
           <span class="footer__developed">Developed with</span>
           <svg class="footer__icon" width="14px" height="14px">
@@ -138,7 +147,9 @@
             <use href="./images/icons.svg#icon-close"></use>
           </svg>
         </button>
-        <h2 class="login-modal__title">enter your data to sign in</h2>
+        <h2 class="login-modal__title">
+          enter your data to sign in or sign up
+        </h2>
         <form class="login-modal__form js-login-form">
           <ul class="login-modal__filters">
             <li class="login-modal__filter">
@@ -147,6 +158,7 @@
                 name="method"
                 id="sign-in"
                 class="login-modal__radio"
+                value="sign-in"
                 checked
               />
               <label for="sign-in" class="login-modal__label">Sign in</label>
@@ -157,6 +169,7 @@
                 name="method"
                 id="sign-up"
                 class="login-modal__radio"
+                value="sign-up"
               />
               <label for="sign-up" class="login-modal__label">Sign up</label>
             </li>

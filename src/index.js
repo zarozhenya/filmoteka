@@ -12,6 +12,29 @@ import {
   QUEUE_KEY,
 } from './js/constants';
 
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from 'firebase/auth';
+import { getDatabase, ref, set } from 'firebase/database';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyC4TFBFQRWUVazSJUXo0Z29XqKQGw3CwAA',
+  authDomain: 'filmoteka-29d04.firebaseapp.com',
+  projectId: 'filmoteka-29d04',
+  storageBucket: 'filmoteka-29d04.appspot.com',
+  messagingSenderId: '839332022784',
+  appId: '1:839332022784:web:20cca0e4887dab354326e5',
+  measurementId: 'G-8B53C0FEKF',
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+
 const refs = {
   form: document.querySelector('form.header__form'),
   gallery: document.querySelector('.movies-gallery'),
@@ -22,8 +45,11 @@ const refs = {
   watchedBtn: document.querySelector('.js-watched-btn'),
   queueBtn: document.querySelector('.js-queue-btn'),
   loginBtn: document.querySelector('.js-login-btn'),
+  logoutBtn: document.querySelector('.js-logout-btn'),
   loginModal: document.querySelector('.js-login-modal'),
   loginModalCloseBtn: document.querySelector('.js-login-close'),
+  loginForm: document.querySelector('.js-login-form'),
+  libraryLink: document.querySelector('.js-library-item'),
 };
 
 let items = [];
@@ -32,6 +58,7 @@ let query = '';
 let currentResult = 0;
 let totalResults = 0;
 let searchByQuery = false;
+let isAuthorized = false;
 const loader = new Loader();
 
 const showButton = () => {
@@ -98,7 +125,7 @@ const reset = () => {
 
 const loadTrendingMovies = async () => {
   const res = await fetch(
-    `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&page=${page}`
+    `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&page=${page}`
   );
   const data = await res.json();
   currentResult += data.results.length;
@@ -157,6 +184,13 @@ const renderModal = idMovie => {
       : 'No information';
   refs.backdrop.querySelector('.js-text').textContent = overview;
   refs.backdrop.querySelector('.js-modal').dataset.id = id;
+  if (isAuthorized) {
+    refs.queueBtn.classList.remove('is-hidden');
+    refs.watchedBtn.classList.remove('is-hidden');
+  } else {
+    refs.queueBtn.classList.add('is-hidden');
+    refs.watchedBtn.classList.add('is-hidden');
+  }
 };
 
 const onFormSubmit = async e => {
@@ -260,6 +294,47 @@ const onQueueBtnClick = e => {
   hideModal();
 };
 
+const onLoginSubmit = async e => {
+  e.preventDefault();
+  const { email, password, method } = e.currentTarget.elements;
+  console.log(method.value);
+  if (method.value === 'sign-up') {
+    await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    ).catch(error => {
+      console.log(error.code);
+      console.log(error.message);
+    });
+  } else if (method.value === 'sign-in') {
+    await signInWithEmailAndPassword(auth, email.value, password.value).catch(
+      error => {
+        console.log(error.code);
+        console.log(error.message);
+      }
+    );
+  }
+  hideLogin();
+  e.target.reset();
+};
+
+const onLogOut = e => {
+  auth.signOut();
+};
+
+onAuthStateChanged(auth, user => {
+  if (user) {
+    isAuthorized = true;
+    refs.loginBtn.classList.add('is-hidden');
+    refs.logoutBtn.classList.remove('is-hidden');
+  } else {
+    isAuthorized = false;
+    refs.logoutBtn.classList.add('is-hidden');
+    refs.loginBtn.classList.remove('is-hidden');
+  }
+});
+
 refs.form.addEventListener('submit', onFormSubmit);
 refs.loadMoreBtn.addEventListener('click', onLoadMore);
 refs.gallery.addEventListener('click', onGalleryClick);
@@ -267,6 +342,8 @@ refs.modalCloseBtn.addEventListener('click', hideModal);
 refs.watchedBtn.addEventListener('click', onWatchedBtnClick);
 refs.queueBtn.addEventListener('click', onQueueBtnClick);
 refs.loginBtn.addEventListener('click', showLogin);
+refs.logoutBtn.addEventListener('click', onLogOut);
 refs.loginModalCloseBtn.addEventListener('click', hideLogin);
+refs.loginForm.addEventListener('submit', onLoginSubmit);
 
 loadTrendingMovies().then(renderItems);

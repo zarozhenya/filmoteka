@@ -96,6 +96,7 @@
 .header-list__item {
   position: relative;
 }
+
 .header-list__item--current:after {
   content: '';
   display: block;
@@ -105,8 +106,14 @@
   height: 3px;
   background-color: red;
 }
+
+.header-list__item.is-hidden {
+  display: none;
+}
 .header-list__link {
   display: block;
+  background-color: inherit;
+  border: none;
   font-weight: 500;
   font-size: 12px;
   line-height: 14px;
@@ -115,6 +122,13 @@
   text-decoration: none;
 }
 
+.header-list__link:hover {
+  cursor: pointer;
+}
+
+.header-list__link.is-hidden {
+  display: none;
+}
 .header-list__btn {
   border: none;
   background-color: inherit;
@@ -129,6 +143,10 @@
 
 .header-list__btn:focus {
   outline: none;
+}
+
+.header-list__btn.is-hidden {
+  display: none;
 }
 
 .header__form {
