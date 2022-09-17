@@ -3,6 +3,7 @@ import genres from './js/genres';
 import { readMovies, createMovies } from './js/crud';
 import { Loader } from './js/loader';
 import { showMessage } from './js/showMessage';
+import isEmail from 'validator/lib/isEmail';
 
 import {
   API_KEY,
@@ -315,26 +316,49 @@ const onQueueBtnClick = async e => {
 const onLoginSubmit = async e => {
   e.preventDefault();
   const { email, password, method } = e.currentTarget.elements;
-  console.log(method.value);
-  if (method.value === 'sign-up') {
-    await createUserWithEmailAndPassword(
-      auth,
-      email.value,
-      password.value
-    ).catch(error => {
-      console.log(error.code);
-      console.log(error.message);
+
+  if (!isEmail(email.value)) {
+    showMessage({
+      type: 'failure',
+      message: 'You have to enter a valid email address',
     });
-  } else if (method.value === 'sign-in') {
-    await signInWithEmailAndPassword(auth, email.value, password.value).catch(
-      error => {
-        console.log(error.code);
-        console.log(error.message);
-      }
-    );
+    return;
   }
-  hideLogin();
-  e.target.reset();
+  if (method.value === 'sign-up') {
+    await createUserWithEmailAndPassword(auth, email.value, password.value)
+      .then(() => {
+        hideLogin();
+        e.target.reset();
+      })
+      .catch(error => {
+        if (error.code === 'auth/email-already-in-use') {
+          showMessage({
+            type: 'failure',
+            message: 'This email is already in use',
+          });
+        }
+      });
+  } else if (method.value === 'sign-in') {
+    await signInWithEmailAndPassword(auth, email.value, password.value)
+      .then(() => {
+        hideLogin();
+        e.target.reset();
+      })
+      .catch(error => {
+        if (error.code === 'auth/too-many-requests') {
+          showMessage({
+            type: 'failure',
+            message: 'Too many requests',
+          });
+        }
+        if (error.code === 'auth/wrong-password') {
+          showMessage({
+            type: 'failure',
+            message: 'Wrong password',
+          });
+        }
+      });
+  }
 };
 
 const onLogOut = e => {

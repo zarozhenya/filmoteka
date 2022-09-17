@@ -4,6 +4,7 @@ import { WATCHED_KEY, QUEUE_KEY, BASE_IMG } from './js/constants';
 import genres from './js/genres';
 import { Loader } from './js/loader';
 import { showMessage } from './js/showMessage';
+import isEmail from 'validator/lib/isEmail';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
