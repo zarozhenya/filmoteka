@@ -357,6 +357,12 @@ const onLoginSubmit = async e => {
             message: 'Wrong password',
           });
         }
+        if (error.code === 'auth/user-not-found') {
+          showMessage({
+            type: 'failure',
+            message: 'User not found',
+          });
+        }
       });
   }
 };
