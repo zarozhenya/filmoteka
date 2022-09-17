@@ -62,7 +62,6 @@ let query = '';
 let currentResult = 0;
 let totalResults = 0;
 let searchByQuery = false;
-let isAuthorized = false;
 const loader = new Loader();
 
 const showButton = () => {
@@ -192,13 +191,6 @@ const renderModal = idMovie => {
       : 'No information';
   refs.backdrop.querySelector('.js-text').textContent = overview;
   refs.backdrop.querySelector('.js-modal').dataset.id = id;
-  if (isAuthorized) {
-    refs.queueBtn.classList.remove('is-hidden');
-    refs.watchedBtn.classList.remove('is-hidden');
-  } else {
-    refs.queueBtn.classList.add('is-hidden');
-    refs.watchedBtn.classList.add('is-hidden');
-  }
 };
 
 const onFormSubmit = async e => {
@@ -351,13 +343,15 @@ const onLogOut = e => {
 
 onAuthStateChanged(auth, user => {
   if (user) {
-    isAuthorized = true;
     refs.loginBtn.classList.add('is-hidden');
     refs.logoutBtn.classList.remove('is-hidden');
+    refs.queueBtn.classList.remove('is-hidden');
+    refs.watchedBtn.classList.remove('is-hidden');
   } else {
-    isAuthorized = false;
     refs.logoutBtn.classList.add('is-hidden');
     refs.loginBtn.classList.remove('is-hidden');
+    refs.queueBtn.classList.add('is-hidden');
+    refs.watchedBtn.classList.add('is-hidden');
   }
 });
 
