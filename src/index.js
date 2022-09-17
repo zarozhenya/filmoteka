@@ -1,6 +1,6 @@
 import { getMoviesMarkup } from './js/templates';
 import genres from './js/genres';
-import { readMovies, createMovies, updateMovies } from './js/crud';
+import { readMovies, createMovies } from './js/crud';
 import { Loader } from './js/loader';
 import { showMessage } from './js/showMessage';
 
@@ -19,7 +19,8 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
 } from 'firebase/auth';
-import { getDatabase, ref, set } from 'firebase/database';
+
+import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyC4TFBFQRWUVazSJUXo0Z29XqKQGw3CwAA',
@@ -29,11 +30,14 @@ const firebaseConfig = {
   messagingSenderId: '839332022784',
   appId: '1:839332022784:web:20cca0e4887dab354326e5',
   measurementId: 'G-8B53C0FEKF',
+  databaseURL:
+    'https://filmoteka-29d04-default-rtdb.europe-west1.firebasedatabase.app',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
+const auth = getAuth(app);
+const database = getDatabase(app);
 
 const refs = {
   form: document.querySelector('form.header__form'),
@@ -124,6 +128,7 @@ const reset = () => {
 };
 
 const loadTrendingMovies = async () => {
+  loader.show();
   const res = await fetch(
     `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&page=${page}`
   );
@@ -134,9 +139,11 @@ const loadTrendingMovies = async () => {
     hideButton();
   }
   items = [...items, ...data.results];
+  loader.hide();
 };
 
 const loadMoviesByQuery = async () => {
+  loader.show();
   const res = await fetch(
     `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}&page=${page}`
   );
@@ -147,6 +154,7 @@ const loadMoviesByQuery = async () => {
     hideButton();
   }
   items = [...items, ...data.results];
+  loader.hide();
 };
 
 const renderItems = () => {
@@ -204,7 +212,6 @@ const onFormSubmit = async e => {
 };
 
 const onLoadMore = async () => {
-  loader.show();
   if (searchByQuery) {
     await loadMoviesByQuery();
 
@@ -213,7 +220,6 @@ const onLoadMore = async () => {
     page += 1;
     await loadTrendingMovies();
   }
-  loader.hide();
   renderItems();
 };
 
@@ -224,12 +230,24 @@ const onGalleryClick = e => {
   showModal();
 };
 
-const onWatchedBtnClick = e => {
+const onWatchedBtnClick = async e => {
   const movieId = e.currentTarget.closest('.js-modal').dataset.id;
   const movieData = items.find(({ id }) => id === Number(movieId));
 
-  const watchedMovies = readMovies(WATCHED_KEY);
-  const queueMovies = readMovies(QUEUE_KEY);
+  loader.show();
+
+  const watchedMovies = await readMovies({
+    database,
+    key: WATCHED_KEY,
+    uid: auth.currentUser.uid,
+  });
+
+  const queueMovies = await readMovies({
+    database,
+    key: QUEUE_KEY,
+    uid: auth.currentUser.uid,
+  });
+
   if (
     watchedMovies?.find(({ id }) => id === Number(movieId)) ||
     queueMovies?.find(({ id }) => id === Number(movieId))
@@ -238,20 +256,18 @@ const onWatchedBtnClick = e => {
       type: 'failure',
       message: `'${movieData.title}' has already been added to Library`,
     });
-    hideModal();
-    return;
-  }
-  if (!watchedMovies) {
-    createMovies(WATCHED_KEY, movieData);
-    showMessage({
-      type: 'success',
-      message: `'${movieData.title}' is added to 'Watched'`,
-    });
+    loader.hide();
     hideModal();
     return;
   }
 
-  updateMovies(WATCHED_KEY, movieData);
+  await createMovies({
+    database,
+    key: WATCHED_KEY,
+    uid: auth.currentUser.uid,
+    data: [movieData],
+  });
+  loader.hide();
   showMessage({
     type: 'success',
     message: `'${movieData.title}' is added to 'Watched'`,
@@ -259,34 +275,44 @@ const onWatchedBtnClick = e => {
   hideModal();
 };
 
-const onQueueBtnClick = e => {
+const onQueueBtnClick = async e => {
   const movieId = e.currentTarget.closest('.js-modal').dataset.id;
   const movieData = items.find(({ id }) => id === Number(movieId));
 
-  const queueMovies = readMovies(QUEUE_KEY);
-  const watchedMovies = readMovies(WATCHED_KEY);
+  loader.show();
+
+  const watchedMovies = await readMovies({
+    database,
+    key: WATCHED_KEY,
+    uid: auth.currentUser.uid,
+  });
+
+  const queueMovies = await readMovies({
+    database,
+    key: QUEUE_KEY,
+    uid: auth.currentUser.uid,
+  });
+
   if (
-    queueMovies?.find(({ id }) => id === Number(movieId)) ||
-    watchedMovies?.find(({ id }) => id === Number(movieId))
+    watchedMovies?.find(({ id }) => id === Number(movieId)) ||
+    queueMovies?.find(({ id }) => id === Number(movieId))
   ) {
     showMessage({
       type: 'failure',
       message: `'${movieData.title}' has already been added to Library`,
     });
-    hideModal();
-    return;
-  }
-  if (!queueMovies) {
-    createMovies(QUEUE_KEY, movieData);
-    showMessage({
-      type: 'success',
-      message: `'${movieData.title}' is added to 'Queue'`,
-    });
+    loader.hide();
     hideModal();
     return;
   }
 
-  updateMovies(QUEUE_KEY, movieData);
+  await createMovies({
+    database,
+    key: QUEUE_KEY,
+    uid: auth.currentUser.uid,
+    data: [movieData],
+  });
+  loader.hide();
   showMessage({
     type: 'success',
     message: `'${movieData.title}' is added to 'Queue'`,

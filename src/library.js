@@ -1,7 +1,8 @@
-import { readMovies, deleteMovie, updateMovies } from './js/crud';
+import { readMovies, deleteMovie, createMovies } from './js/crud';
 import { getMoviesMarkup } from './js/templates';
 import { WATCHED_KEY, QUEUE_KEY, BASE_IMG } from './js/constants';
 import genres from './js/genres';
+import { Loader } from './js/loader';
 import { showMessage } from './js/showMessage';
 import { initializeApp } from 'firebase/app';
 import {
@@ -11,6 +12,8 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 
+import { getDatabase } from 'firebase/database';
+
 const firebaseConfig = {
   apiKey: 'AIzaSyC4TFBFQRWUVazSJUXo0Z29XqKQGw3CwAA',
   authDomain: 'filmoteka-29d04.firebaseapp.com',
@@ -19,11 +22,14 @@ const firebaseConfig = {
   messagingSenderId: '839332022784',
   appId: '1:839332022784:web:20cca0e4887dab354326e5',
   measurementId: 'G-8B53C0FEKF',
+  databaseURL:
+    'https://filmoteka-29d04-default-rtdb.europe-west1.firebasedatabase.app',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
+const auth = getAuth(app);
+const database = getDatabase(app);
 
 const refs = {
   watchedBtn: document.querySelector('.js-watched-btn'),
@@ -42,7 +48,8 @@ const refs = {
 };
 
 let items = [];
-let currentPage = 'watched';
+let currentPage;
+const loader = new Loader();
 
 const onBackdropClick = e => {
   if (e.target.classList.contains('backdrop')) {
@@ -140,18 +147,40 @@ const renderModal = idMovie => {
   changeBtnView(currentPage);
 };
 
-const onWatchedBtnClick = e => {
+const onWatchedBtnClick = async e => {
   refs.watchedBtn.classList.add('active');
   refs.queueBtn.classList.remove('active');
+  if (currentPage === 'watched') {
+    return;
+  }
   currentPage = 'watched';
-  items = readMovies(WATCHED_KEY);
+
+  loader.show();
+
+  items = await readMovies({
+    database,
+    key: WATCHED_KEY,
+    uid: auth.currentUser.uid,
+  });
+  loader.hide();
   renderItems();
 };
-const onQueueBtnClick = e => {
+const onQueueBtnClick = async e => {
   refs.queueBtn.classList.add('active');
   refs.watchedBtn.classList.remove('active');
+
+  if (currentPage === 'queue') {
+    return;
+  }
   currentPage = 'queue';
-  items = readMovies(QUEUE_KEY);
+  loader.show();
+  items = await readMovies({
+    database,
+    key: QUEUE_KEY,
+    uid: auth?.currentUser?.uid,
+  });
+  loader.hide();
+
   renderItems();
 };
 const onGalleryClick = e => {
@@ -161,46 +190,94 @@ const onGalleryClick = e => {
   showModal();
 };
 
-const onAddToWatchedBtnClick = e => {
+const onAddToWatchedBtnClick = async e => {
   const id = e.currentTarget.closest('.js-modal').dataset.id;
   const movieData = items.find(({ id: movieId }) => movieId === Number(id));
+  loader.show();
   if (currentPage === 'queue') {
-    updateMovies(WATCHED_KEY, movieData);
-    deleteMovie(QUEUE_KEY, id);
-    items = readMovies(QUEUE_KEY);
+    await createMovies({
+      database,
+      key: WATCHED_KEY,
+      uid: auth.currentUser.uid,
+      data: [movieData],
+    });
+    await deleteMovie({
+      database,
+      key: QUEUE_KEY,
+      uid: auth.currentUser.uid,
+      idToDelete: id,
+    });
+    items = await readMovies({
+      database,
+      key: QUEUE_KEY,
+      uid: auth.currentUser.uid,
+    });
     showMessage({
       type: 'success',
       message: `'${movieData.title}' is moved to 'Watched'`,
     });
   }
   if (currentPage === 'watched') {
-    deleteMovie(WATCHED_KEY, id);
-    items = readMovies(WATCHED_KEY);
+    await deleteMovie({
+      database,
+      key: WATCHED_KEY,
+      uid: auth.currentUser.uid,
+      idToDelete: id,
+    });
+    items = await readMovies({
+      database,
+      key: WATCHED_KEY,
+      uid: auth.currentUser.uid,
+    });
     showMessage({
       type: 'success',
       message: `'${movieData.title}' is deleted`,
     });
   }
+  loader.hide();
   hideModal();
 
   renderItems();
 };
 
-const onAddToQueueBtn = e => {
+const onAddToQueueBtn = async e => {
   const id = e.currentTarget.closest('.js-modal').dataset.id;
   const movieData = items.find(({ id: movieId }) => movieId === Number(id));
   if (currentPage === 'watched') {
-    updateMovies(QUEUE_KEY, movieData);
-    deleteMovie(WATCHED_KEY, id);
-    items = readMovies(WATCHED_KEY);
+    await createMovies({
+      database,
+      key: QUEUE_KEY,
+      uid: auth.currentUser.uid,
+      data: [movieData],
+    });
+    await deleteMovie({
+      database,
+      key: WATCHED_KEY,
+      uid: auth.currentUser.uid,
+      idToDelete: id,
+    });
+    items = await readMovies({
+      database,
+      key: WATCHED_KEY,
+      uid: auth.currentUser.uid,
+    });
     showMessage({
       type: 'success',
       message: `'${movieData.title}' is moved to 'Queue'`,
     });
   }
   if (currentPage === 'queue') {
-    deleteMovie(QUEUE_KEY, id);
-    items = readMovies(QUEUE_KEY);
+    await deleteMovie({
+      database,
+      key: QUEUE_KEY,
+      uid: auth.currentUser.uid,
+      idToDelete: id,
+    });
+    items = await readMovies({
+      database,
+      key: QUEUE_KEY,
+      uid: auth.currentUser.uid,
+    });
     showMessage({
       type: 'success',
       message: `'${movieData.title}' is deleted`,
@@ -245,10 +322,20 @@ onAuthStateChanged(auth, user => {
     isAuthorized = true;
     refs.loginBtn.classList.add('is-hidden');
     refs.logoutBtn.classList.remove('is-hidden');
+    refs.watchedBtn.removeAttribute('disabled');
+    refs.queueBtn.removeAttribute('disabled');
+    onWatchedBtnClick();
   } else {
     isAuthorized = false;
     refs.logoutBtn.classList.add('is-hidden');
     refs.loginBtn.classList.remove('is-hidden');
+    refs.watchedBtn.setAttribute('disabled', 'true');
+    refs.queueBtn.setAttribute('disabled', 'true');
+    refs.gallery.innerHTML = '';
+    showMessage({
+      type: 'info',
+      message: 'You have to login to see movies in library',
+    });
   }
 });
 
@@ -262,5 +349,3 @@ refs.loginBtn.addEventListener('click', showLogin);
 refs.logoutBtn.addEventListener('click', onLogOut);
 refs.loginModalCloseBtn.addEventListener('click', hideLogin);
 refs.loginForm.addEventListener('submit', onLoginSubmit);
-
-onWatchedBtnClick();

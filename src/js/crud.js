@@ -1,16 +1,40 @@
-export function createMovies(key, data) {
-  localStorage.setItem(key, JSON.stringify([data]));
+import { ref, get, set, child } from 'firebase/database';
+
+export async function createMovies({
+  database,
+  key,
+  uid,
+  data,
+  savePrev = true,
+}) {
+  const prevData = await readMovies({ database, uid, key });
+  await set(
+    ref(database, `users/${uid}/${key}`),
+    savePrev ? [...data, ...prevData] : [...data]
+  );
 }
-export function readMovies(key) {
-  const movies = localStorage.getItem(key);
-  return JSON.parse(movies) || [];
+export async function readMovies({ database, key, uid }) {
+  let movies;
+  await get(child(ref(database), `users/${uid}/${key}`))
+    .then(snapshot => {
+      if (snapshot.exists()) {
+        movies = snapshot.val();
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  return movies || [];
 }
-export function updateMovies(key, data) {
-  const movies = readMovies(key);
-  localStorage.setItem(key, JSON.stringify([data, ...movies]));
-}
-export function deleteMovie(key, movieId) {
-  const movies = readMovies(key);
-  const filteredMovies = movies.filter(({ id }) => id !== Number(movieId));
-  localStorage.setItem(key, JSON.stringify(filteredMovies));
+
+export async function deleteMovie({ database, key, uid, idToDelete }) {
+  const prevData = await readMovies({ database, uid, key });
+  const filteredMovies = prevData.filter(({ id }) => id !== Number(idToDelete));
+  await createMovies({
+    database,
+    key,
+    uid,
+    data: filteredMovies,
+    savePrev: false,
+  });
 }
