@@ -319,14 +319,12 @@ const onLogOut = e => {
 
 onAuthStateChanged(auth, user => {
   if (user) {
-    isAuthorized = true;
     refs.loginBtn.classList.add('is-hidden');
     refs.logoutBtn.classList.remove('is-hidden');
     refs.watchedBtn.removeAttribute('disabled');
     refs.queueBtn.removeAttribute('disabled');
     onWatchedBtnClick();
   } else {
-    isAuthorized = false;
     refs.logoutBtn.classList.add('is-hidden');
     refs.loginBtn.classList.remove('is-hidden');
     refs.watchedBtn.setAttribute('disabled', 'true');
